@@ -21,8 +21,8 @@ jobs:
   trivy:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
       - name: Trivy (SAST + SCA + Misconfig)
-        uses: actions/checkout@v4
         uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: fs
