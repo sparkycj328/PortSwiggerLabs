@@ -20,8 +20,13 @@ def read_wordfile(wordfile):
         
     return wordfile_list
 
+def perform_request(url):
+    return
 
-def enumerate_usernames(url):
+def enumerate_usernames(url, usernames):
+    for username in usernames:
+        cleaned_text = username.replace("\n", "")
+        print(cleaned_text)
     return
 
 
@@ -31,9 +36,8 @@ def main():
         print("(+) Example: %s www.example.com file/path/1 file/path/2" % sys.argv[0])
         sys.exit(-1)
     usernames = read_wordfile(sys.argv[2])
-    print(usernames[:2])
+    enumerate_usernames(sys.argv[1], usernames)
     passwords = read_wordfile(sys.argv[3])
-    print(passwords)
 
 if __name__ == "__main__":
     main()
