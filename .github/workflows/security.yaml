@@ -30,7 +30,7 @@ jobs:
         with:
           scan-type: 'fs'
           scan-ref: '.'
-          hide-progess: true
+          hide-progress: true
           output: 'results.txt'
       
       - name: Publish Trivy Output to Summary
