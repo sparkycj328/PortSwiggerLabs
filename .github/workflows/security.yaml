@@ -19,15 +19,15 @@ jobs:
           GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "true"
 
   trivy:
-    name: Trivy (SAST + SCA + Misconfig)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: aquasecurity/trivy-action@0.28.0
+      - name: Trivy (SAST + SCA + Misconfig)
+        uses: actions/checkout@v4
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: fs
           scan-ref: .
-          severity: "CRITICAL, HIGH"
+          severity: HIGH, CRITICAL
           format: 'github'
           output: 'results.json'
           scanners: "vuln, misconfig"
