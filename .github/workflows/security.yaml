@@ -22,15 +22,15 @@ jobs:
   #     # Run the "semgrep scan" command on the command line of the docker image.
   #     - run: semgrep scan --config auto
   codeql:
+    name: CodeQL (SAST)
     runs-on: ubuntu-latest
     permissions:
       actions: read
       contents: read
     steps:
-      - name: CodeQL (SAST)
       - uses: actions/checkout@v4
 
-      - uses: github/codeql-action/init@v4
+        uses: github/codeql-action/init@v4
         with:
           languages: python
       - uses: github/codeql-action/autobuild@v4
