@@ -10,17 +10,41 @@ permissions:
   contents: read
 
 jobs:
-  semgrep:
-    name: Semgrep CE (SAST)
+  # semgrep:
+  #   name: Semgrep CE (SAST)
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     # A Docker image with Semgrep installed. Do not change this.
+  #     image: semgrep/semgrep
+  #   steps:
+  #     # Fetch project source with GitHub Actions Checkout. Use either v3 or v4.
+  #     - uses: actions/checkout@v4
+  #     # Run the "semgrep scan" command on the command line of the docker image.
+  #     - run: semgrep scan --config auto
+  codeql:
     runs-on: ubuntu-latest
-    container:
-      # A Docker image with Semgrep installed. Do not change this.
-      image: semgrep/semgrep
+    permissions:
+      actions: read
+      contents: read
     steps:
-      # Fetch project source with GitHub Actions Checkout. Use either v3 or v4.
+      - name: CodeQL (SAST)
       - uses: actions/checkout@v4
-      # Run the "semgrep scan" command on the command line of the docker image.
-      - run: semgrep scan --config auto
+
+      - uses: github/codeql-action/init@v4
+        with:
+          languages: python
+      - uses: github/codeql-action/autobuild@v4
+      - uses: github/codeql-action/analyze@v4
+        upload: 'never'
+        output: 'codeql-results.sarif'
+      
+      - name: Upload CodeQL scan results as Github artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-report
+          path: '${{ github.workspace }}/codeql-results.sarif'
+          retention-days: 1
+
 
   gitleaks:
     name: Gitleaks (Secrets)
@@ -37,7 +61,7 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v4
-      - name: Trivy SBOM
+      - name: Trivy (SCA to SBOM)
         uses: aquasecurity/trivy-action@0.28.0
         with:
           scan-type: 'fs'
