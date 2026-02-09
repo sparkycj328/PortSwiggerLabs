@@ -27,7 +27,7 @@ jobs:
         with:
           scan-type: fs
           scan-ref: .
-          severity: HIGH, CRITICAL
+          severity: "HIGH,CRITICAL"
           format: 'github'
           output: 'results.json'
           scanners: "vuln, misconfig"
