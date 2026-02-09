@@ -31,7 +31,7 @@ def main():
         print("(+) Example: %s www.example.com file/path/1 file/path/2" % sys.argv[0])
         sys.exit(-1)
     usernames = read_wordfile(sys.argv[2])
-    print(usernames)
+    print(usernames[:2])
     passwords = read_wordfile(sys.argv[3])
     print(passwords)
 

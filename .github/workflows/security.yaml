@@ -28,6 +28,14 @@ jobs:
           scan-type: fs
           scan-ref: .
           severity: "CRITICAL, HIGH"
-          format: table
+          format: 'github'
+          output: 'results.json'
           scanners: "vuln, misconfig"
           exit-code: 1
+    
+    name: Upload Report
+    uses: actions/upload-artifact@v4
+    with:
+      name: scanning-report
+      path: '${{ github.workspace }}/results.json'
+      retention-days: 20
