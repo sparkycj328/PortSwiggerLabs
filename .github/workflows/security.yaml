@@ -30,7 +30,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-        uses: github/codeql-action/init@v4
+      - uses: github/codeql-action/init@v4
         with:
           languages: python
       - uses: github/codeql-action/autobuild@v4
