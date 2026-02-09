@@ -30,7 +30,7 @@ jobs:
           severity: "HIGH,CRITICAL"
           format: 'github'
           output: 'results.json'
-          scanners: "vuln, misconfig"
+          scanners: "vuln,misconfig"
           exit-code: 1
     
       - name: Upload Report
