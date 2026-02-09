@@ -16,7 +16,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: gitleaks/gitleaks-action@v2
         env:
-        GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "true"
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "true"
 
   trivy:
     name: Trivy (SAST + SCA + Misconfig)
@@ -33,9 +33,9 @@ jobs:
           scanners: "vuln, misconfig"
           exit-code: 1
     
-    name: Upload Report
-    uses: actions/upload-artifact@v4
-    with:
-      name: scanning-report
-      path: '${{ github.workspace }}/results.json'
-      retention-days: 20
+      - name: Upload Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: scanning-report
+          path: '${{ github.workspace }}/results.json'
+          retention-days: 20
