@@ -13,7 +13,7 @@ Each learning path/concept will be grouped into its own folder containing additi
             - script.py
         - Lab_2
             - script.py
-<br>And so on...</br>
+        - And so on...
 
 ## Feedback
 If you have any feedback, definitely let me know!
