@@ -44,6 +44,8 @@ jobs:
         id: scan
         with:
           sbom: "${{ github.event.repository.name }}-sbom.spdx.json"
+          dependency-snapshot: true
+          github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Inspect action SARIF report
         env: 
