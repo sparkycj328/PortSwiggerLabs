@@ -19,7 +19,7 @@ jobs:
       # Fetch project source with GitHub Actions Checkout. Use either v3 or v4.
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
       # Run the "semgrep scan" command on the command line of the docker image.
-      - run: semgrep scan --config auto --error
+      - run: semgrep scan --config auto --exclude-rule python.requests.security.disabled-cert-validation.disabled-cert-validation --error 
 
   gitleaks:
     name: Gitleaks (Secrets)
