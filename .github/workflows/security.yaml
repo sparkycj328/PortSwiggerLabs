@@ -35,10 +35,10 @@ jobs:
     name: Create SBOM
     runs-on: ubuntu-latest
     steps:
-      uses: anchore/sbom-action@3f46e6c23709f2b35c9c5182affe8ef3d6e32b71
-      with:
-        format: spdx-json
-        output-file: "${{ github.event.repository.name }}-sbom.spdx.json"
+      - uses: anchore/sbom-action@3f46e6c23709f2b35c9c5182affe8ef3d6e32b71
+        with:
+          format: spdx-json
+          output-file: "${{ github.event.repository.name }}-sbom.spdx.json"
   
   sca: 
     name: Scan SBOM
@@ -50,5 +50,6 @@ jobs:
           sbom: "${{ github.event.repository.name }}-sbom.spdx.json"
 
       - name: Inspect action SARIF report
-        FILE_NAME: ${{ steps.scan.outputs.sarif }}
+        env: 
+          FILE_NAME: ${{ steps.scan.outputs.sarif }}
         run: cat "$FILE_NAME"
