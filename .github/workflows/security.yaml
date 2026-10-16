@@ -9,44 +9,46 @@ permissions:
   contents: read
 
 jobs:
-  workflow:
+  semgrep:
+    name: Semgrep CE (SAST)
     runs-on: ubuntu-latest
-    semgrep:
-      name: Semgrep CE (SAST)
-      container:
-        # A Docker image with Semgrep installed. Do not change this.
-        image: semgrep/semgrep
-      steps:
-        # Fetch project source with GitHub Actions Checkout. Use either v3 or v4.
-        - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        # Run the "semgrep scan" command on the command line of the docker image.
-        - run: semgrep scan --config auto --exclude-rule python.requests.security.disabled-cert-validation.disabled-cert-validation --error 
+    container:
+      # A Docker image with Semgrep installed. Do not change this.
+      image: semgrep/semgrep
+    steps:
+      # Fetch project source with GitHub Actions Checkout. Use either v3 or v4.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      # Run the "semgrep scan" command on the command line of the docker image.
+      - run: semgrep scan --config auto --exclude-rule python.requests.security.disabled-cert-validation.disabled-cert-validation --error 
 
-    gitleaks:
-      name: Gitleaks (Secrets)
-      steps:
-        - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
-        - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "true"
-    
-    sbom:
-      name: Create SBOM
-      steps:
-        uses: anchore/sbom-action@3f46e6c23709f2b35c9c5182affe8ef3d6e32b71
+  gitleaks:
+    name: Gitleaks (Secrets)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+      - uses: gitleaks/gitleaks-action@e0c47f4f8be36e29cdc102c57e68cb5cbf0e8d1e
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: "true"
+  
+  sbom:
+    name: Create SBOM
+    runs-on: ubuntu-latest
+    steps:
+      uses: anchore/sbom-action@3f46e6c23709f2b35c9c5182affe8ef3d6e32b71
+      with:
+        format: spdx-json
+        output-file: "${{ github.event.repository.name }}-sbom.spdx.json"
+  
+  sca: 
+    name: Scan SBOM
+    runs-on: ubuntu-latest  
+    steps:
+      - name: Scan SBOM
+        uses: anchore/scan-action@759abae762556d8363636565d659064af4df2a38
         with:
-          format: spdx-json
-          output-file: "${{ github.event.repository.name }}-sbom.spdx.json"
-    
-    sca:
-      name: Scan SBOM for Vulnerabilities     
-      steps:
-        - name: Scan SBOM
-          uses: anchore/scan-action@759abae762556d8363636565d659064af4df2a38
-          with:
-            sbom: "${{ github.event.repository.name }}-sbom.spdx.json"
+          sbom: "${{ github.event.repository.name }}-sbom.spdx.json"
 
-        - name: Inspect action SARIF report
-          FILE_NAME: ${{ steps.scan.outputs.sarif }}
-          run: cat "$FILE_NAME"
+      - name: Inspect action SARIF report
+        FILE_NAME: ${{ steps.scan.outputs.sarif }}
+        run: cat "$FILE_NAME"
